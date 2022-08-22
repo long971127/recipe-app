@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/src/foundation/key.dart';
-import 'package:flutter/src/widgets/framework.dart';
 
 class CategoryRow extends StatelessWidget {
-  const CategoryRow({Key? key}) : super(key: key);
+  final List<Widget> listData;
+  // ignore: use_key_in_widget_constructors
+  const CategoryRow({required this.listData});
 
   @override
   Widget build(BuildContext context) {
