@@ -1,5 +1,7 @@
+// ignore: file_names
 class SelectedFoodDrinkDetails {
-  final String name,
+  final String ids,
+      name,
       imageURL,
       ingredient1,
       ingredient2,
@@ -10,14 +12,14 @@ class SelectedFoodDrinkDetails {
       instruction;
 
   SelectedFoodDrinkDetails(
-    this.name,
-    this.imageURL,
-    this.ingredient1,
-    this.ingredient2,
-    this.ingredient3,
-    this.ingredientMeasure1,
-    this.ingredientMeasure2,
-    this.ingredientMeasure3,
-    this.instruction,
-  );
+      this.ids,
+      this.name,
+      this.imageURL,
+      this.ingredient1,
+      this.ingredient2,
+      this.ingredient3,
+      this.ingredientMeasure1,
+      this.ingredientMeasure2,
+      this.ingredientMeasure3,
+      this.instruction);
 }
