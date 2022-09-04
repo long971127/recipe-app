@@ -2,54 +2,45 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:recipe_app/model/CategoriesContent.dart';
-import 'package:recipe_app/model/FoodCategories.dart';
 import '../components/locationBar.dart';
 import '../components/searchBar.dart';
-import '../model/FoodCategories.dart';
-import 'detailsPage.dart';
+import '../model/DrinkCategories.dart';
+import 'drinkDetailsPage.dart';
 
-class FoodPage extends StatefulWidget {
-  const FoodPage({Key? key}) : super(key: key);
+class BeveragePage extends StatefulWidget {
+  const BeveragePage({Key? key}) : super(key: key);
 
   @override
   // ignore: library_private_types_in_public_api
   _DataFromAPIState createState() => _DataFromAPIState();
 }
 
-class _DataFromAPIState extends State<FoodPage> {
-  String categoryType = 'beef';
-  Future<List<FoodCategory>> callCategoriesApi() async {
-    var response = await http.get(
-        Uri.parse("https://www.themealdb.com/api/json/v1/1/categories.php"));
+class _DataFromAPIState extends State<BeveragePage> {
+  Future<List<DrinkCategory>> callCategoriesApi() async {
+    var response = await http.get(Uri.parse(
+        "https://www.thecocktaildb.com/api/json/v1/1/list.php?c=list"));
     var jsonData = jsonDecode(response.body);
-    var finalJsonData = jsonData["categories"];
-    List<FoodCategory> foodCategories = [];
+    var finalJsonData = jsonData["drinks"];
+    List<DrinkCategory> drinkCategories = [];
     for (var f in finalJsonData) {
-      FoodCategory foodCategory =
-          FoodCategory(f['strCategory'], f['strCategoryThumb']);
-      foodCategories.add(foodCategory);
+      DrinkCategory drinkCategory = DrinkCategory(f['strCategory']);
+      drinkCategories.add(drinkCategory);
     }
-    return foodCategories;
+    return drinkCategories;
   }
 
-  Future<List<CategoriesContent>> callFoodApi() async {
+  Future<List<CategoriesContent>> callDrinkApi() async {
     var responses = await http.get(Uri.parse(
-        "https://www.themealdb.com/api/json/v1/1/filter.php?c=$categoryType"));
+        "https://www.thecocktaildb.com/api/json/v1/1/filter.php?c=Ordinary_Drink"));
     var jsonData = jsonDecode(responses.body);
-    var finalJsonDatas = jsonData["meals"];
-    List<CategoriesContent> foodDetails = [];
+    var finalJsonDatas = jsonData["drinks"];
+    List<CategoriesContent> drinkDetails = [];
     for (var f in finalJsonDatas) {
       CategoriesContent categoriesContent =
-          CategoriesContent(f['strMeal'], f['strMealThumb'], f['idMeal']);
-      foodDetails.add(categoriesContent);
+          CategoriesContent(f['strDrink'], f['strDrinkThumb'], f['idDrink']);
+      drinkDetails.add(categoriesContent);
     }
-    return foodDetails;
-  }
-
-  void recallAPI() {
-    setState(() {
-      callFoodApi();
-    });
+    return drinkDetails;
   }
 
   @override
@@ -98,12 +89,12 @@ class _DataFromAPIState extends State<FoodPage> {
                       Container(
                           height: 150,
                           margin: const EdgeInsets.symmetric(horizontal: 10),
-                          child: FutureBuilder<List<FoodCategory>>(
+                          child: FutureBuilder<List<DrinkCategory>>(
                               future: callCategoriesApi(),
                               builder: (context, snapshot) {
                                 if (snapshot.data == null) {
                                   return const Center(
-                                    child: Text('Loading'),
+                                    child: Text('Errors'),
                                   );
                                 } else {
                                   return ListView.builder(
@@ -113,62 +104,53 @@ class _DataFromAPIState extends State<FoodPage> {
                                       itemBuilder: (context, i) {
                                         return Row(
                                           children: <Widget>[
-                                            GestureDetector(
-                                                onTap: () {
-                                                  categoryType =
-                                                      snapshot.data![i].name;
-                                                  recallAPI();
-                                                },
-                                                child: Container(
-                                                  margin: const EdgeInsets.all(
-                                                      10.0),
-                                                  height: 100,
-                                                  decoration: BoxDecoration(
-                                                    color: Colors.white,
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            10),
-                                                    boxShadow: [
-                                                      BoxShadow(
-                                                        color: Colors.grey
-                                                            .withOpacity(0.5),
-                                                        spreadRadius: 5,
-                                                        blurRadius: 7,
-                                                        offset: const Offset(0,
-                                                            3), // changes position of shadow
-                                                      ),
-                                                    ],
+                                            Container(
+                                              margin:
+                                                  const EdgeInsets.all(10.0),
+                                              height: 100,
+                                              decoration: BoxDecoration(
+                                                color: Colors.white,
+                                                borderRadius:
+                                                    BorderRadius.circular(10),
+                                                boxShadow: [
+                                                  BoxShadow(
+                                                    color: Colors.grey
+                                                        .withOpacity(0.5),
+                                                    spreadRadius: 5,
+                                                    blurRadius: 7,
+                                                    offset: const Offset(0,
+                                                        3), // changes position of shadow
                                                   ),
-                                                  child: Padding(
-                                                      padding:
-                                                          const EdgeInsets.all(
-                                                              12.0),
-                                                      child: Column(
-                                                        crossAxisAlignment:
-                                                            CrossAxisAlignment
-                                                                .center,
-                                                        // ignore: prefer_const_literals_to_create_immutables
-                                                        children: <Widget>[
-                                                          Image.network(
-                                                            snapshot.data![i]
-                                                                .imageURL,
-                                                            height: 40,
-                                                            width: 100,
-                                                          ),
-                                                          const SizedBox(
-                                                            height: 10,
-                                                          ),
-                                                          Text(
-                                                              snapshot.data![i]
-                                                                  .name,
-                                                              style: const TextStyle(
-                                                                  fontSize: 15,
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .bold)),
-                                                        ],
-                                                      )),
-                                                ))
+                                                ],
+                                              ),
+                                              child: Padding(
+                                                  padding: const EdgeInsets.all(
+                                                      12.0),
+                                                  child: Column(
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .center,
+                                                    // ignore: prefer_const_literals_to_create_immutables
+                                                    children: <Widget>[
+                                                      Image.network(
+                                                        'https://picsum.photos/500/300',
+                                                        height: 40,
+                                                        width: 100,
+                                                      ),
+                                                      const SizedBox(
+                                                        height: 10,
+                                                      ),
+                                                      Text(
+                                                          snapshot
+                                                              .data![i].name,
+                                                          style: const TextStyle(
+                                                              fontSize: 15,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .bold)),
+                                                    ],
+                                                  )),
+                                            )
                                           ],
                                         );
                                       });
@@ -183,15 +165,15 @@ class _DataFromAPIState extends State<FoodPage> {
                           style: TextStyle(fontSize: 20),
                         ),
                       ),
-
                       SizedBox(
                           height: size.height * 0.5,
                           child: FutureBuilder<List<CategoriesContent>>(
-                              future: callFoodApi(),
+                              future: callDrinkApi(),
                               builder: (context, snapshot) {
                                 if (snapshot.data == null) {
                                   return const Center(
-                                    child: Text('Loading'),
+                                    child:
+                                        Text('Drink not available currently'),
                                   );
                                 } else {
                                   return ListView.builder(
@@ -205,7 +187,7 @@ class _DataFromAPIState extends State<FoodPage> {
                                                 context,
                                                 MaterialPageRoute(
                                                     builder: (context) =>
-                                                        DetailsPage(
+                                                        DrinkDetailsPage(
                                                           mealId: snapshot
                                                               .data![i].mealId,
                                                         )),
@@ -282,30 +264,6 @@ class _DataFromAPIState extends State<FoodPage> {
                                       });
                                 }
                               }))
-                      // Expanded(
-                      //     child: GestureDetector(
-                      //         onTap: () {
-                      //           Navigator.push(
-                      //             context,
-                      //             MaterialPageRoute(
-                      //                 builder: (context) =>
-                      //                     const DetailsPage()),
-                      //           );
-                      //         },
-                      //         child: Container(
-                      //           height: 300,
-                      //           margin:
-                      //               const EdgeInsets.symmetric(vertical: 10),
-                      //           decoration: const BoxDecoration(
-                      //               borderRadius: BorderRadius.all(
-                      //                   Radius.circular(10.0))),
-                      //           // child: ListView.builder(
-                      //           //   itemCount: itemsData.length,
-                      //           //   itemBuilder: (context, index) {
-                      //           //     return itemsData[index];
-                      //           //   },
-                      //           // )
-                      //         )))
                     ])),
           ],
         ));
