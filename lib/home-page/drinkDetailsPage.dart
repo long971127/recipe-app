@@ -26,6 +26,7 @@ class _DataFromAPIState extends State<DrinkDetailsPage> {
     var f = jsonData["drinks"][0];
     SelectedFoodDrinkDetails selectedFoodDrinkDetails =
         SelectedFoodDrinkDetails(
+      f['idDrink'],
       f['strDrink'],
       f['strDrinkThumb'],
       f['strIngredient1'],
